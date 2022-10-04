@@ -17,10 +17,22 @@ export const appRouter = trpc
       const firstPromise = api.getPokemonById(first);
       const secondPromise = api.getPokemonById(second);
 
-      const pokemons = await Promise.all([firstPromise, secondPromise]);
+      const pokemons = await Promise.all([firstPromise, secondPromise]).then((values)=>{
+        const [firstP, secondP] = values;
+
+        return [
+          {
+            name: firstP.name, 
+            sprite: firstP.sprites.front_default
+          }, 
+          {
+            name: secondP.name, 
+            sprite: secondP.sprites.front_default
+          }
+        ];
+      });
       return pokemons;
     }
-  })
-  ;
+  });
 // export type definition of API
 export type AppRouter = typeof appRouter;

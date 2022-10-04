@@ -24,7 +24,7 @@ export default function Home() {
   },[]);
 
   const firstImage = useMemo(()=>{
-    let sprite = first?.sprites.front_default;
+    let sprite = first?.sprite;
     if (!sprite){
       return '';
     }
@@ -33,7 +33,7 @@ export default function Home() {
   }, [first]);
   // const [secondImage, setSecondImage] = useState('');
   const secondImage = useMemo(()=>{
-    let sprite = second?.sprites.front_default;
+    let sprite = second?.sprite;
     if (!sprite){
       return '';
     }
