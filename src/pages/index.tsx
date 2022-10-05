@@ -27,6 +27,9 @@ export default function Home() {
           sprite: data.pokeSprite,
         });      
     },
+    onError: (err) => {
+      console.error(err);
+    }
   });
 
   const second = trpc.useQuery(["get-pokemon-by-id", secondId], { 
@@ -37,6 +40,9 @@ export default function Home() {
         name:data.pokeName,
         sprite: data.pokeSprite,
       })
+    },
+    onError: (err) => {
+      console.error(err);
     }
    });
 
