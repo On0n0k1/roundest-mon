@@ -18,10 +18,10 @@ export default function Home() {
     sprite: '',
   })
 
-  trpc.useQuery(["get-pokemon-by-id", firstId], { 
+  const first = trpc.useQuery(["get-pokemon-by-id", firstId], { 
     staleTime: Infinity,
     onSuccess: (data) => {
-      console.log('Setting %cfirst%c as %c%s',"color:cyan","color:white","color:cyan", data.pokeName);
+      // console.log('Setting %cfirst%c as %c%s',"color:cyan","color:white","color:cyan", data.pokeName);
         setFirstData({
           name: data.pokeName,
           sprite: data.pokeSprite,
@@ -29,10 +29,10 @@ export default function Home() {
     },
   });
 
-  trpc.useQuery(["get-pokemon-by-id", secondId], { 
+  const second = trpc.useQuery(["get-pokemon-by-id", secondId], { 
     staleTime: Infinity,
     onSuccess: (data)=>{
-      console.log('Setting %csecond%c as %c%s',"color:yellow","color:white","color:yellow", data.pokeName);
+      // console.log('Setting %csecond%c as %c%s',"color:yellow","color:white","color:yellow", data.pokeName);
       setSecondData({
         name:data.pokeName,
         sprite: data.pokeSprite,
