@@ -5,59 +5,51 @@ import { getOptionsForVote } from '@/utils/getRandomPokemon';
 import { trpc } from '@/utils/trpc';
 
 export default function Home() {
+  const [firstId, setFirstId] = useState(0);
+  const [secondId, setSecondId] = useState(0);
   
-  const pokemons = trpc.useQuery(["get-pokemon-by-id"], { 
-    retryDelay: 1000,
-    // initialData: [0, 0],
+  const [firstData, setFirstData] = useState({
+    name:'',
+    sprite: '',
   });
 
-  const [first, second] = useMemo(()=>{
-    let pokemonData = pokemons?.data;
+  const [secondData, setSecondData] = useState({
+    name: '',
+    sprite: '',
+  })
 
-    if (pokemonData){
-      const [firstPokemon, secondPokemon] = pokemonData;
-      // console.log(firstPokemon);
+  trpc.useQuery(["get-pokemon-by-id", firstId], { 
+    staleTime: Infinity,
+    onSuccess: (data) => {
+      console.log('Setting %cfirst%c as %c%s',"color:cyan","color:white","color:cyan", data.pokeName);
+        setFirstData({
+          name: data.pokeName,
+          sprite: data.pokeSprite,
+        });      
+    },
+  });
 
-      return [firstPokemon, secondPokemon];
+  trpc.useQuery(["get-pokemon-by-id", secondId], { 
+    staleTime: Infinity,
+    onSuccess: (data)=>{
+      console.log('Setting %csecond%c as %c%s',"color:yellow","color:white","color:yellow", data.pokeName);
+      setSecondData({
+        name:data.pokeName,
+        sprite: data.pokeSprite,
+      })
     }
-    return [null, null];
-  },[]);
+   });
 
-  const firstImage = useMemo(()=>{
-    let sprite = first?.sprite;
-    if (!sprite){
-      return '';
-    }
 
-    return sprite;
-  }, [first]);
-  // const [secondImage, setSecondImage] = useState('');
-  const secondImage = useMemo(()=>{
-    let sprite = second?.sprite;
-    if (!sprite){
-      return '';
-    }
+  useEffect(()=>{
+    console.log('First render');
+    let ids = getOptionsForVote();
+    setFirstId(ids[0]);
+    setSecondId(ids[1]);
+  },[])
 
-    return sprite;
-  },[second]);
 
-  const firstName = useMemo(() => {
-    let name = first?.name;
-    if (!name) {
-      return 'Loading...';
-    }
-
-    return name;
-  }, [first]);
-
-  const secondName = useMemo(() => {
-    let name = second?.name;
-    if(!name) {
-      return 'Loading...';
-    }
-
-    return name;
-  }, [second]);
+  // console.log('Rendering');
 
   return (
     <div className='h-screen w-screen flex flex-col justify-center items-center align-middle'>
@@ -65,22 +57,21 @@ export default function Home() {
       <div className='p-2'/>
       <div className='border rounded p-8 flex justify-between max-w-2xl'>
         <div className='w-64 h-64 flex flex-col'>
-          <img src={firstImage} className='w-full'/>
+          <img src={firstData.sprite} className='w-full'/>
           <div className='text-xl text-center capitalize'>
-            {firstName}
+            {firstData.name}
           </div>
         </div>
-        <div className='p-8'>VS</div>
+        <div className='p-8 grid place-content-center'>VS</div>
         <div className='w-64 h-64 flex flex-col'>
-          <img src={secondImage} className='w-full'/>
+          <img src={secondData.sprite} className='w-full'/>
           <div className='text-xl text-center capitalize'>
-            {secondName}
+            {secondData.name}
           </div>
         </div>
-        
       </div>
     </div>
-  )
+  );
 }
 
 
