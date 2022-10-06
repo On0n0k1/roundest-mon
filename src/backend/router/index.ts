@@ -17,7 +17,7 @@ export const appRouter = trpc.router().query("get-pokemon-by-id", {
       };
     }
 
-    // console.log('get-pokemon-id with IDs %d', data.input);
+    console.log('get-pokemon-id with ID %c%d',"color: yellow", data.input);
     const api = new PokemonClient();
 
     const pokemon = await api.getPokemonById(data.input);
