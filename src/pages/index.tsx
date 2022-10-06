@@ -18,7 +18,7 @@ export default function Home() {
     sprite: '',
   })
 
-  const first = trpc.useQuery(["get-pokemon-by-id", firstId], { 
+  trpc.useQuery(["get-pokemon-by-id", firstId], { 
     staleTime: Infinity,
     onSuccess: (data) => {
       // console.log('Setting %cfirst%c as %c%s',"color:cyan","color:white","color:cyan", data.pokeName);
@@ -32,7 +32,7 @@ export default function Home() {
     }
   });
 
-  const second = trpc.useQuery(["get-pokemon-by-id", secondId], { 
+  trpc.useQuery(["get-pokemon-by-id", secondId], { 
     staleTime: Infinity,
     onSuccess: (data)=>{
       // console.log('Setting %csecond%c as %c%s',"color:yellow","color:white","color:yellow", data.pokeName);
