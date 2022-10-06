@@ -1,59 +1,155 @@
 import type { NextPage } from 'next';
-import { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { getOptionsForVote } from '@/utils/getRandomPokemon';
 
 import { trpc } from '@/utils/trpc';
 
+
+
+
+function Pokemon(props: {name: string, sprite: string}){
+  return (
+    <div className='w-64 h-64 flex flex-col'>
+      <img src={props.sprite} className='w-full'/>
+      <div className='text-xl text-center capitalize'>
+        {props.name}
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
+  console.log("Rendering");
   const [firstId, setFirstId] = useState(0);
   const [secondId, setSecondId] = useState(0);
-  
-  const [firstData, setFirstData] = useState({
-    name:'',
-    sprite: '',
+  // const [firstPokemon, setFirstPokemon] = useState({
+  //   name: 'Loading...',
+  //   sprite: '',
+  // });
+  // const [secondPokemon, setSecondPokemon] = useState({
+  //   name: 'Loading...',
+  //   sprite: '',
+  // });
+
+  const first = trpc.useQuery(["get-pokemon-by-id", firstId], { 
+    staleTime: Infinity,
   });
 
-  const [secondData, setSecondData] = useState({
-    name: '',
-    sprite: '',
-  })
-
-  trpc.useQuery(["get-pokemon-by-id", firstId], { 
+  const second = trpc.useQuery(["get-pokemon-by-id", secondId], { 
     staleTime: Infinity,
-    onSuccess: (data) => {
-      // console.log('Setting %cfirst%c as %c%s',"color:cyan","color:white","color:cyan", data.pokeName);
-        setFirstData({
-          name: data.pokeName,
-          sprite: data.pokeSprite,
-        });      
-    },
-    onError: (err) => {
-      console.error(err);
-    }
-  });
-
-  trpc.useQuery(["get-pokemon-by-id", secondId], { 
-    staleTime: Infinity,
-    onSuccess: (data)=>{
-      // console.log('Setting %csecond%c as %c%s',"color:yellow","color:white","color:yellow", data.pokeName);
-      setSecondData({
-        name:data.pokeName,
-        sprite: data.pokeSprite,
-      })
-    },
-    onError: (err) => {
-      console.error(err);
-    }
    });
 
 
   useEffect(()=>{
-    console.log('First render');
+    // console.log('First render');
     let ids = getOptionsForVote();
     setFirstId(ids[0]);
     setSecondId(ids[1]);
-  },[])
+  },[]);
 
+  const parseQuery = (pokeQuery: any) => {
+    if(pokeQuery.isLoading){
+      return {
+        name: 'Loading',
+        sprite: '',
+      };
+    } 
+    
+    if(!pokeQuery.isSuccess){
+      return {
+        name: 'Error Loading',
+        sprite: '',
+      };
+    }
+
+    if (pokeQuery.data){
+      return {
+        name: pokeQuery.data.pokeName,
+        sprite: pokeQuery.data.pokeSprite,
+      };
+    }
+
+    console.warn('Unexpected branch reached');
+    return {
+      name: 'unexpected branch error',
+      sprite: '',
+    };
+  };
+
+  let firstData = parseQuery(first);
+  let secondData = parseQuery(second);
+
+  // useEffect(()=>{
+
+  //   if(first.isLoading){
+  //     setFirstPokemon( {
+  //       name: 'Loading',
+  //       sprite: '',
+  //     });
+  //     return;
+  //   } 
+    
+  //   if(!first.isSuccess){
+  //     setFirstPokemon({
+  //       name: 'Error Loading',
+  //       sprite: '',
+  //     });
+
+  //     return;
+  //   }
+
+  //   if (first.data){
+  //     setFirstPokemon( {
+  //       name: first.data.pokeName,
+  //       sprite: first.data.pokeSprite,
+  //     });
+
+  //     return;
+  //   }
+
+  //   console.warn('Unexpected branch reached');
+  //   setFirstPokemon({
+  //     name: 'unexpected branch error',
+  //     sprite: '',
+  //   });
+  // }, [first]);
+
+  // useEffect(()=>{}, [first]);
+
+  // useEffect(()=>{
+  //   if(second.isLoading){
+  //     setSecondPokemon({
+  //       name: 'Loading',
+  //       sprite: '',
+  //     });
+
+  //     return;
+  //   }
+
+  //   if(!second.isSuccess){
+  //     setSecondPokemon({
+  //       name: 'Error Loading',
+  //       sprite: '',
+  //     });
+
+  //     return;
+  //   }
+
+  //   if (second.data){
+  //     setSecondPokemon({
+  //       name: second.data.pokeName,
+  //       sprite: second.data.pokeSprite,
+  //     });
+
+  //     return;
+  //   }
+
+  //   console.warn('Unexpected branch reached');
+  //   setSecondPokemon({
+  //     name: 'unexpected branch error',
+  //     sprite: '',
+  //   });
+  // }, [second]);
 
   // console.log('Rendering');
 
@@ -62,22 +158,26 @@ export default function Home() {
       <div className='text-2xl text-center'>Which Pokémon is Rounder</div>
       <div className='p-2'/>
       <div className='border rounded p-8 flex justify-between max-w-2xl'>
-        <div className='w-64 h-64 flex flex-col'>
-          <img src={firstData.sprite} className='w-full'/>
+        {/* <div className='w-64 h-64 flex flex-col'>
+          <img src={firstPokemon.sprite} className='w-full'/>
           <div className='text-xl text-center capitalize'>
-            {firstData.name}
+            {firstPokemon.name}
           </div>
-        </div>
+        </div> */}
+        <Pokemon name={firstData.name} sprite={firstData.sprite}/>
         <div className='p-8 grid place-content-center'>VS</div>
-        <div className='w-64 h-64 flex flex-col'>
-          <img src={secondData.sprite} className='w-full'/>
+        {/* <div className='w-64 h-64 flex flex-col'>
+          <img src={secondPokemon.sprite} className='w-full'/>
           <div className='text-xl text-center capitalize'>
-            {secondData.name}
+            {secondPokemon.name}
           </div>
-        </div>
+        </div> */}
+        <Pokemon name={secondData.name} sprite={secondData.sprite}/>
       </div>
     </div>
   );
 }
+
+
 
 
