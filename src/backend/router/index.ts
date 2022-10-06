@@ -1,5 +1,6 @@
 import * as trpc from '@trpc/server';
 import { z } from 'zod';
+import { getOptionsForVote } from '@/utils/getRandomPokemon';
 
 
 import { PokemonClient } from 'pokenode-ts';
@@ -7,32 +8,28 @@ import { PokemonClient } from 'pokenode-ts';
 
 
 export const appRouter = trpc.router().query("get-pokemon-by-id", {
-  input: z.number(),
-  async resolve(data) {
-    if(!data.input){
-      // console.log('First Render...');
-      return {
-        pokeName: '',
-        pokeSprite: '',
-      };
-    }
+  async resolve() {
+    const [first, second] = getOptionsForVote();
 
-    console.log('get-pokemon-id with ID %c%d',"color: yellow", data.input);
+    console.log('get-pokemon-id with IDs %c%d and %d',"color: yellow", first, second);
     const api = new PokemonClient();
 
-    const pokemon = await api.getPokemonById(data.input);
+    let pokemons = await Promise.all([api.getPokemonById(first), api.getPokemonById(second)]);
 
-    if(!pokemon.sprites.front_default){
+    return pokemons.map((pokemon)=>{
+      if(!pokemon.sprites.front_default){
+        return {
+          pokeName: pokemon.name,
+          pokeSprite: '',
+        }
+      }
+      
       return {
         pokeName: pokemon.name,
-        pokeSprite: '',
-      }
-    }
+        pokeSprite: pokemon.sprites.front_default,
+      };
+    });
     
-    return {
-      pokeName: pokemon.name,
-      pokeSprite: pokemon.sprites.front_default,
-    };
   }
 });
 
