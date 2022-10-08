@@ -2,9 +2,7 @@ import * as trpc from '@trpc/server';
 import { z } from 'zod';
 import { getOptionsForVote } from '@/utils/getRandomPokemon';
 
-
 import { PokemonClient } from 'pokenode-ts';
-
 
 
 export const appRouter = trpc.router().query("get-pokemon-by-id", {
