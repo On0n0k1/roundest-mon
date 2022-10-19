@@ -1,0 +1,17 @@
+GET http://localhost:3000/ HTTP/1.1
+
+### 
+
+GET http://localhost:3000/api/todos
+
+
+###
+
+POST http://localhost:3000/api/todos HTTP/1.1
+content-type: application/json
+
+{
+  "title": "Testingggg again Dockerized Prisma API",
+  "description": "aaaa simple again server that accesses Prisma to read its database schema a Docker container",
+  "completed": false
+}

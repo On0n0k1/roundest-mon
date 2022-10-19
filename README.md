@@ -1,3 +1,19 @@
+# Quick tips to properly describe later
+
+Docker support has been included. To run it:
+ - Go to '/databases' and run `docker-compose up`;
+ - When databases have done loading, go to '/client' and run `docker-compose up`;
+
+There are 2 instances of postgres. The shadow db is used by 'prisma migrate' for syncing with the original database;
+
+`dpage/pgadmin4` is a GUI for managing the postgres.
+
+After starting the client, open it in `localhost:3000`.
+
+
+Boilerplate text below
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started

@@ -1,0 +1,20 @@
+version: "3.9"
+services:
+  prisma-postgres-api:
+    stdin_open: true
+    build:
+      context: ../
+      dockerfile: dev.Dockerfile
+    container_name: prisma-postgres-api
+    # depends_on:
+    #   - postgres
+    #   - shadow_postgres
+    ports:
+      - "3000:3000"
+    restart: always
+    networks:
+      - databases_common_network
+networks:
+  databases_common_network:
+    external: true
+  # Add more containers below (nginx, postgres, etc.)
