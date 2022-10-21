@@ -6,9 +6,6 @@ services:
       context: ../
       dockerfile: dev.Dockerfile
     container_name: prisma-postgres-api
-    # depends_on:
-    #   - postgres
-    #   - shadow_postgres
     ports:
       - "3000:3000"
     restart: always

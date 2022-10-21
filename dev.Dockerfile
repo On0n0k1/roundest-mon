@@ -12,11 +12,6 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN npm i
 
 COPY .env ./.env
-# COPY prisma ./prisma
-# COPY src ./src
-# COPY public ./public
-# COPY next.config.js .
-# COPY tsconfig.json .
 
 COPY . .
 
